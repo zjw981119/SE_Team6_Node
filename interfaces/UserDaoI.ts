@@ -1,10 +1,10 @@
 import User from "../models/User";
 
 /**
- * Declare UserDao interface which contains all the CRUD functions that the concrete class
- * UserDao will implement.
+ * Declare UserDaoI interface which contains all the CRUD functions that the concrete class
+ * UserDaoI will implement.
  */
-export default interface UserDao{
+export default interface UserDaoI {
     findAllUsers(): Promise<User[]>;
     findUserById(uid: string): Promise<User>;
     createUser(user: User): Promise<User>;
