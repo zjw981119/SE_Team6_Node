@@ -9,13 +9,17 @@ import TuitController from "./controllers/TuitController";
 const app = express();
 
 /*
-//connect to mongoDB database
+//connect to local mongoDB database
 mongoose.connect('mongodb://localhost:27017/tuiter');
+ */
 
+//connect to remote mongoDB database
+//username: admin  password: admin
+mongoose.connect('mongodb+srv://admin:admin@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
- */
+
 
 
 app.use(bodyParser.json())
