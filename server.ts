@@ -8,14 +8,19 @@ import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
 const app = express();
 
+//read database username && password through process.env
+const dotenv = require("dotenv")
+dotenv.config()
+
 /*
 //connect to local mongoDB database
 mongoose.connect('mongodb://localhost:27017/tuiter');
  */
 
 //connect to remote mongoDB database
-//username: admin  password: admin
-mongoose.connect('mongodb+srv://admin:admin@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+//username: process.env.DB_USERNAME  password: process.env.DB_PASSWORD
+mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
+    +'@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
