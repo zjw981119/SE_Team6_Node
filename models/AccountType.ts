@@ -1,5 +1,6 @@
 /**
- * Enumeration for user account type.
+ * @typedef AccountType Enumeration for user account type.
+ *
  */
 enum AccountType {
     Personal = 'PERSONAL',

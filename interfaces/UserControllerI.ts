@@ -1,8 +1,9 @@
 import {Request, Response} from "express";
 
 /**
- * UserControllerI interface declare functions to handle HTTP events
- * that create, read, update and delete user instances.
+ * @file Declares API for users related HTTP request methods.
+ * Handle HTTP events that create, read, update and delete user instances.
+ *
  */
 export default interface UserControllerI {
     findAllUsers(req: Request, res: Response): void;

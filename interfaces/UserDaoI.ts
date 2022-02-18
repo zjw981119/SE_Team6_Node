@@ -1,8 +1,8 @@
 import User from "../models/User";
 
 /**
- * Declare UserDaoI interface which contains all the CRUD functions that the concrete class
- * UserDaoI will implement.
+ * @file Declares API for users related data access object methods.
+ *
  */
 export default interface UserDaoI {
     findAllUsers(): Promise<User[]>;

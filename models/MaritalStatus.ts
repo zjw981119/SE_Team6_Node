@@ -1,5 +1,6 @@
 /**
- * Enumeration for user account marital status.
+ * @typedef MaritalStatus Enumeration for user account marital status.
+ *
  */
 enum MaritalStatus {
     Married = 'MARRIED',

@@ -2,6 +2,11 @@ import mongoose, {Schema} from "mongoose";
 
 /**
  * Create the TuitSchema to represent tuit document instances stored in a MongoDB database.
+ * @typedef Tuit represents a tuiter
+ * @property {String} tuit tuit's content
+ * @property {Date} postedOn tuit's creation time
+ * @property {ObjectId} postedBy user reference
+ *
  */
 const TuitSchema = new mongoose.Schema({
     tuit: {type: String, required: true},
