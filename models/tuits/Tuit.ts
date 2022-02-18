@@ -1,7 +1,7 @@
-import User from "./User";
+import User from "../users/User";
 
 /**
- * Tuit class represents tuit content(tuit), post time and poster.
+ * @class Tuit Represents tuit content(tuit), post time and poster.
  * @property {String} tuit tuit's content
  * @property {Date} postedOn tuit's creation time
  * @property {ObjectId} postedBy user reference

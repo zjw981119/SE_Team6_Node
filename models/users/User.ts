@@ -3,7 +3,7 @@ import MaritalStatus from "./MaritalStatus";
 import Location from "./Location";
 
 /**
- * User class represents all important information of user account.
+ * @class User Represents all important information of user account.
  * @property {String} username user's account name
  * @property {String} password user's account password
  * @property {String} firstName user's first name

@@ -2,7 +2,7 @@
  * @file Implements DAO managing data storage of users. Uses mongoose UserModel
  * to integrate with MongoDB
  */
-import User from "../models/User";
+import User from "../models/users/User";
 import UserModel from "../mongoose/users/UserModel";
 import UserDaoI from "../interfaces/UserDaoI";
 
@@ -52,7 +52,7 @@ export default class UserDao implements UserDaoI {
         await UserModel.create(user);
 
     /**
-     * Removes user from the database.
+     * Removes user from the database
      * @param {string} uid Primary key of user to be removed
      * @returns {Promise} To be notified when user is removed from the database
      */

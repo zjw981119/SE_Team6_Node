@@ -1,5 +1,5 @@
-import Tag from "./Tag";
-import Tuit from "./Tuit";
+import Tag from "../tuits/Tag";
+import Tuit from "../tuits/Tuit";
 /**
  * Mapping class which replace many to many relationships between Tuit and Tag classes.
  */
