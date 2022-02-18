@@ -3,7 +3,7 @@
  */
 import {Express, Request, Response} from "express";
 import LikeDao from "../daos/LikeDao";
-import LikeControllerI from "../interfaces/LikeControllerI";
+import LikeControllerI from "../interfaces/likes/LikeControllerI";
 
 /**
  * @class LikeController Implements RESTful Web service API for likes resource.
@@ -16,7 +16,7 @@ import LikeControllerI from "../interfaces/LikeControllerI";
  *     no londer likes a tuit</li>
  * </ul>
  * @property {LikeDao} likeDao Singleton DAO implementing likes CRUD operations
- * @property {LikeController} LikeController Singleton controller implementing
+ * @property {LikeController} likeController Singleton controller implementing
  * RESTful Web service API
  */
 export default class LikeController implements LikeControllerI {
@@ -67,7 +67,7 @@ export default class LikeController implements LikeControllerI {
      * path parameters uid and tid representing the user that is liking the tuit
      * and the tuit being liked
      * @param {Response} res Represents response to client, including the
-     * body formatted as JSON containing the new likes that was inserted in the
+     * body formatted as JSON containing the new like that was inserted in the
      * database
      */
     userLikesTuit = (req: Request, res: Response) =>

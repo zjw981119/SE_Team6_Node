@@ -2,7 +2,7 @@
  * @file Declares API for users related data access object methods.
  *
  */
-import User from "../models/users/User";
+import User from "../../models/users/User";
 
 export default interface UserDaoI {
     findAllUsers(): Promise<User[]>;

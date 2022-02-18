@@ -1,4 +1,5 @@
 import mongoose, {Schema} from "mongoose";
+import Tuit from "../../models/tuits/Tuit";
 
 /**
  * Create the TuitSchema to represent tuit document instances stored in a MongoDB database.
@@ -8,7 +9,7 @@ import mongoose, {Schema} from "mongoose";
  * @property {ObjectId} postedBy user reference
  *
  */
-const TuitSchema = new mongoose.Schema({
+const TuitSchema = new mongoose.Schema<Tuit>({
     tuit: {type: String, required: true},
     postedOn: {type: Date, default: Date.now},
     postedBy: {type: Schema.Types.ObjectId, ref: "UserModel"},

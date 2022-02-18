@@ -2,7 +2,7 @@
  * @file Implements DAO managing data storage of likes. Uses mongoose LikeModel
  * to integrate with MongoDB
  */
-import LikeDaoI from "../interfaces/LikeDaoI";
+import LikeDaoI from "../interfaces/likes/LikeDaoI";
 import LikeModel from "../mongoose/likes/LikeModel";
 import Like from "../models/mappings/Likes";
 
@@ -27,6 +27,7 @@ export default class LikeDao implements LikeDaoI {
 
     /**
      * Retrieve all users documents from likes collection
+     * @param {String} tid Tuit's primary key
      * @returns {Promise} To be notified when the users are retrieved from database
      */
     public findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
@@ -37,6 +38,7 @@ export default class LikeDao implements LikeDaoI {
 
     /**
      * Retrieve all tuits documents from likes collection
+     * @param {string} uid User's primary key
      * @returns {Promise} To be notified when the tuits are retrieved from database
      */
     public findAllTuitsLikedByUser = async (uid: string): Promise<Like[]> =>

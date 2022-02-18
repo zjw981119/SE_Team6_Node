@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import User from "../../models/users/User";
 
 /**
  * Create the UserSchema to represent user document instances stored in a MongoDB database.
@@ -19,7 +20,7 @@ import mongoose from "mongoose";
  * @property {Number} longitude user's location longitude
  *
  */
-const UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema<User>({
     username: {type: String, required: true},
     password: {type: String, required: true},
     firstName: String,
