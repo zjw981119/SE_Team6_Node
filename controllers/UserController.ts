@@ -28,7 +28,7 @@ export default class UserController implements UserControllerI {
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
-     * @returns UserController
+     * @returns userController
      */
     public static getInstance = (app: Express): UserController => {
         if (UserController.userController === null) {

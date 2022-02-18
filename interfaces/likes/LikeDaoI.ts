@@ -6,6 +6,6 @@ import Like from "../../models/mappings/Likes";
 export default interface LikeDaoI {
     findAllUsersThatLikedTuit (tid: string): Promise<Like[]>;
     findAllTuitsLikedByUser (uid: string): Promise<Like[]>;
-    userLikesTuit (tid: string, uid: string): Promise<Like>;
-    userUnlikesTuit (tid: string, uid: string): Promise<any>;
+    userLikesTuit (uid: string, tid: string): Promise<Like>;
+    userUnlikesTuit (uid: string, tid: string): Promise<any>;
 };

@@ -27,7 +27,7 @@ export default class FollowController implements FollowControllerI {
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
-     * @return FollowController
+     * @return followController
      */
     public static getInstance = (app: Express): FollowController => {
         if(FollowController.followController === null) {

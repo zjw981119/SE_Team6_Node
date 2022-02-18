@@ -25,15 +25,14 @@ export default class LikeController implements LikeControllerI {
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
-     * @return LikeController
+     * @return likeController
      */
     public static getInstance = (app: Express): LikeController => {
         if(LikeController.likeController === null) {
             LikeController.likeController = new LikeController();
             app.get("/users/:uid/likes", LikeController.likeController.findAllTuitsLikedByUser);
-            app.get("/likes/tuits/:tid", LikeController.likeController.findAllUsersThatLikedTuit);
-            app.post("/users/:uid/likes/:tid", LikeController.likeController.userLikesTuit);
-            app.delete("/users/:uid/likes/:tid", LikeController.likeController.userUnlikesTuit);
+            app.post("/users/:uid/bookmarks/:tid", LikeController.likeController.userLikesTuit);
+            app.delete("/users/:uid/bookmarks/:tid", LikeController.likeController.userUnlikesTuit);
         }
         return LikeController.likeController;
     }

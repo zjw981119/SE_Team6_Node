@@ -27,7 +27,7 @@ export default class TuitController implements TuitControllerI {
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
-     * @return TuitController
+     * @return tuitController
      */
     public static getInstance = (app: Express): TuitController => {
         if(TuitController.tuitController === null) {
