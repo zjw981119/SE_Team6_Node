@@ -27,7 +27,7 @@ export default class BookmarkDao implements BookmarkDaoI {
 
     /**
      * Retrieve all tuits documents from bookmarks collection
-     * @param {String} uid User's primary key
+     * @param {string} uid User's primary key
      * @returns {Promise} To be notified when the tuits are retrieved from database
      */
     public findAllTuitsBookmarkedByUser = async (uid: string): Promise<Bookmark[]> =>
@@ -39,7 +39,7 @@ export default class BookmarkDao implements BookmarkDaoI {
     /**
      * Inserts bookmark instance into the database
      * @param {string} uid User's primary key
-     * @param {String} tid Tuit's primary key
+     * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when bookmark is inserted into the database
      */
     public userBookmarksTuit = async (uid: string, tid: string): Promise<any> =>

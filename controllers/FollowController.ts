@@ -2,13 +2,11 @@
  * @file Controller RESTful Web service API for follows resource
  */
 import {Express, Request, Response} from "express";
-import LikeDao from "../daos/LikeDao";
-import LikeControllerI from "../interfaces/likes/LikeControllerI";
 import FollowControllerI from "../interfaces/follows/FollowControllerI";
 import FollowDao from "../daos/FollowDao";
 
 /**
- * @class FollowController Implements RESTful Web service API for likes resource.
+ * @class FollowController Implements RESTful Web service API for follows resource.
  * Defines the following HTTP endpoints:
  * <ul>
  *     <li>GET /users/:uid/follows to retrieve all the users that followed by a user </li>
@@ -17,7 +15,7 @@ import FollowDao from "../daos/FollowDao";
  *     <li>DELETE /users/:uid1/follows/:uid2 to record that a user
  *     no londer follows another user</li>
  * </ul>
- * @property {FollowDao} followDao Singleton DAO implementing likes CRUD operations
+ * @property {FollowDao} followDao Singleton DAO implementing follows CRUD operations
  * @property {FollowController} followController Singleton controller implementing
  * RESTful Web service API
  */
@@ -58,7 +56,7 @@ export default class FollowController implements FollowControllerI {
      * @param {Request} req Represents request from client, including the path
      * parameter uid representing the user that is being followed
      * @param {Response} res Represents response to client, including the
-     * body formatted as JSON arrays containing the user objects that were liked
+     * body formatted as JSON arrays containing the user objects
      */
     findAllFollowers = (req: Request, res: Response) =>
         FollowController.followDao.findAllFollowers(req.params.uid)

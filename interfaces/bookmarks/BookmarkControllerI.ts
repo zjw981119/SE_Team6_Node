@@ -1,6 +1,6 @@
 /**
  * @file Declares API for bookmarks related HTTP request methods.
- * Handle HTTP events that create, read, update and delete like instances.
+ * Handle HTTP events that create, read, update and delete bookmark instances.
  */
 import {Request, Response} from "express";
 

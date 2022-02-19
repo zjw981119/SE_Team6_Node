@@ -8,7 +8,6 @@ import Bookmark from "../../models/mappings/Bookmarks";
  * @property {ObjectId} likedBy user reference
  *
  */
-//<Bookmark> is able to check the properties at compile time
 const BookmarkSchema = new mongoose.Schema<Bookmark>({
     bookmarkedTuit: {type: Schema.Types.ObjectId, ref: "TuitModel"},
     bookmarkedBy: {type: Schema.Types.ObjectId, ref: "UserModel"},

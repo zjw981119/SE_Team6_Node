@@ -8,9 +8,9 @@ import Follow from "../../models/mappings/Follows";
  * @property {ObjectId} follower user reference
  *
  */
-//<Follow> is able to check the properties at compile time
 const FollowSchema = new mongoose.Schema<Follow>({
     user: {type: Schema.Types.ObjectId, ref: "UserModel"},
     follower: {type: Schema.Types.ObjectId, ref: "UserModel"},
+
 }, {collection: "follows"});
 export default FollowSchema;

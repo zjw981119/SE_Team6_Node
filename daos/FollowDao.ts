@@ -1,5 +1,5 @@
 /**
- * @file Implements DAO managing data storage of likes. Uses mongoose LikeModel
+ * @file Implements DAO managing data storage of likes. Uses mongoose FollowModel
  * to integrate with MongoDB
  */
 import FollowDaoI from "../interfaces/follows/FollowDaoI";
@@ -50,7 +50,7 @@ export default class FollowDao implements FollowDaoI {
     /**
      * Inserts follow instance into the database
      * @param {string} uid1 Follower(User)'s primary key
-     * @param {String} uid2 User's primary key
+     * @param {string} uid2 User's primary key
      * @returns {Promise} To be notified when follow is inserted into the database
      */
     public userFollowsAnotherUser = async (uid1: string, uid2: string): Promise<Follow> =>
@@ -59,7 +59,7 @@ export default class FollowDao implements FollowDaoI {
     /**
      * Removes follow instance from the database
      * @param {string} uid1 Follower(User)'s primary key
-     * @param {String} uid2 User's primary key
+     * @param {string} uid2 User's primary key
      * @returns {Promise} To be notified when follow is removed from the database
      */
     public userUnfollowsAnotherUser = async (uid1: string, uid2: string): Promise<any> =>

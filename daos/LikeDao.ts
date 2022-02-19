@@ -27,7 +27,7 @@ export default class LikeDao implements LikeDaoI {
 
     /**
      * Retrieve all users documents from likes collection
-     * @param {String} tid Tuit's primary key
+     * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when the users are retrieved from database
      */
     public findAllUsersThatLikedTuit = async (tid: string): Promise<Like[]> =>
@@ -50,7 +50,7 @@ export default class LikeDao implements LikeDaoI {
     /**
      * Inserts like instance into the database
      * @param {string} uid User's primary key
-     * @param {String} tid Tuit's primary key
+     * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when like is inserted into the database
      */
     public userLikesTuit = async (uid: string, tid: string): Promise<any> =>
@@ -59,7 +59,7 @@ export default class LikeDao implements LikeDaoI {
     /**
      * Removes like instance from the database
      * @param {string} uid User's primary key
-     * @param {String} tid Tuit's primary key
+     * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when like is removed from the database
      */
     public userUnlikesTuit = async (uid: string, tid: string): Promise<any> =>

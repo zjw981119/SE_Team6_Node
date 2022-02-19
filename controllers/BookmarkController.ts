@@ -10,8 +10,8 @@ import BookmarkDao from "../daos/BookmarkDao";
  * Defines the following HTTP endpoints:
  * <ul>
  *     <li>GET /users/:uid/bookmarks to retrieve all the tuits bookmarked by a user </li>
- *     <li>POST /users/:uid/likes/:tid to record that a user bookmarks a tuit </li>
- *     <li>DELETE /users/:uid/likes/:tid to record that a user
+ *     <li>POST /users/:uid/bookmarks/:tid to record that a user bookmarks a tuit </li>
+ *     <li>DELETE /users/:uid/bookmarks/:tid to record that a user
  *     no londer bookmarks a tuit</li>
  * </ul>
  * @property {BookmarkDao} bookmarkDao Singleton DAO implementing bookmarks CRUD operations
@@ -30,8 +30,8 @@ export default class BookmarkController implements BookmarkControllerI {
         if(BookmarkController.bookmarkController === null) {
             BookmarkController.bookmarkController = new BookmarkController();
             app.get("/users/:uid/bookmarks", BookmarkController.bookmarkController.findAllTuitsBookmarkedByUser);
-            app.post("/users/:uid/likes/:tid", BookmarkController.bookmarkController.userBookmarksTuit);
-            app.delete("/users/:uid/likes/:tid", BookmarkController.bookmarkController.userUnbookmarksTuit);
+            app.post("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userBookmarksTuit);
+            app.delete("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userUnbookmarksTuit);
         }
         return BookmarkController.bookmarkController;
     }
@@ -41,7 +41,7 @@ export default class BookmarkController implements BookmarkControllerI {
     /**
      * Retrieves all tuits that bookmarked by a user from the database
      * @param {Request} req Represents request from client, including the path
-     * parameter uid representing the bookmarking user
+     * parameter uid representing the user
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuits objects
      */
