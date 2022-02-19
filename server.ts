@@ -6,6 +6,10 @@ import mongoose from "mongoose";
 import bodyParser from "body-parser";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
+import LikeController from "./controllers/LikeController";
+import FollowController from "./controllers/FollowController";
+import BookmarkController from "./controllers/BookmarkController";
+import MessageController from "./controllers/MessageController";
 const app = express();
 
 //read database username && password through process.env
@@ -19,8 +23,11 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
 
 //connect to remote mongoDB database
 //username: process.env.DB_USERNAME  password: process.env.DB_PASSWORD
-mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
-    +'@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+/**
+ * mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
+ *     +'@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+ */
+mongoose.connect('mongodb://localhost:27017/tuiter');
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
@@ -38,7 +45,10 @@ app.get('/add/:a/:b', (req, res) => {
 //instantiate controllers
 const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
-
+const likeController = LikeController.getInstance(app);
+const followController = FollowController.getInstance(app);
+const bookmarkController = BookmarkController.getInstance(app);
+const messageController = MessageController.getInstance(app);
 
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);

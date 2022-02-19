@@ -54,7 +54,8 @@ export default class MessageDao implements MessageDaoI {
      * @returns {Promise} To be notified when message is inserted into the database
      */
     public userSendsMessage = async (uid1: string, uid2: string, message: Message): Promise<Message> =>
-        MessageModel.create({message, sentFrom: uid1, sentTo: uid2});
+        //use "..." to parse object into key-value pairs instead of casting message object to string
+        MessageModel.create({...message, sentFrom: uid1, sentTo: uid2});
 
     /**
      * Removes follow instance from the database

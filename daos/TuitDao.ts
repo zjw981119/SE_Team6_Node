@@ -66,9 +66,13 @@ export default class TuitDao implements TuitDaoI {
      * @param {string} uid User's primary key
      * @param {Tuit} tuit Instance to be inserted into the database
      * @returns {Promise} To be notified when tuit is inserted into the database
+     *
      */
     public createTuitByUser = async (uid: string, tuit: Tuit): Promise<Tuit> =>
-        await TuitModel.create({tuit, postedBy: uid});
+        //use "...tuit" to parse object into key-value pair instead of casting tuit to string
+        await TuitModel.create({...tuit, postedBy: uid});
+
+
 
     /**
      * Removes tuit from the database.
