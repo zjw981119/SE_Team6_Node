@@ -1,5 +1,5 @@
 /**
- * @typedef AccountType Enumeration for user account type.
+ * @file Declares Enumeration for user account type.
  *
  */
 enum AccountType {
