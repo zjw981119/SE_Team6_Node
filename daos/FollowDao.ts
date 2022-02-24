@@ -7,9 +7,9 @@ import Follow from "../models/mappings/Follows";
 import FollowModel from "../mongoose/follows/FollowModel";
 
 /**
- * @class LikeDao Implements Data Access Object managing data storage of likes
- * @implements {LikeDaoI} LikeDaoI
- * @property {likeDao} likeDao Private single instance of LikeDao
+ * @class FollowDao Implements Data Access Object managing data storage of follows
+ * @implements {FollowDaoI} FollowDaoI
+ * @property {FollowDao} followDao Private single instance of FollowDao
  */
 export default class FollowDao implements FollowDaoI {
     private static followDao: FollowDao | null = null;
@@ -45,6 +45,16 @@ export default class FollowDao implements FollowDaoI {
         FollowModel
             .find({user: uid})
             .populate("follower")
+            .exec();
+
+    /**
+     * Retrieve all follows data
+     * @returns {Promise} To be notified when the follows' data are retrieved from database
+     */
+    public findAllFollows = async (): Promise<Follow[]> =>
+        FollowModel
+            .find()
+            .populate("user follower")
             .exec();
 
     /**

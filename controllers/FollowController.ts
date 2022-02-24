@@ -11,6 +11,7 @@ import FollowDao from "../daos/FollowDao";
  * <ul>
  *     <li>GET /users/:uid/follows to retrieve all the users that followed by a user </li>
  *     <li>GET /users/:uid/followers to retrieve all the users that follow a user </li>
+ *     <li>GET /follows to retrieve all the follows' data </li>
  *     <li>POST /users/:uid1/follows/:uid2 to record that a user follows another user </li>
  *     <li>DELETE /users/:uid1/follows/:uid2 to record that a user
  *     no londer follows another user</li>
@@ -32,6 +33,7 @@ export default class FollowController implements FollowControllerI {
             FollowController.followController = new FollowController();
             app.get("/users/:uid/follows", FollowController.followController.findAllUsersFollowedByUser);
             app.get("/users/:uid/followers", FollowController.followController.findAllFollowers);
+            app.get("/follows", FollowController.followController.findAllFollows);
             app.post("/users/:uid1/follows/:uid2", FollowController.followController.userFollowsAnotherUser);
             app.delete("/users/:uid1/follows/:uid2", FollowController.followController.userUnfollowsAnotherUser);
         }
@@ -60,6 +62,16 @@ export default class FollowController implements FollowControllerI {
      */
     findAllFollowers = (req: Request, res: Response) =>
         FollowController.followDao.findAllFollowers(req.params.uid)
+            .then(follows => res.json(follows));
+
+    /**
+     * Retrieves all follows' data from the database
+     * @param {Request} req Represents request from client
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the follows objects
+     */
+    findAllFollows = (req: Request, res: Response) =>
+        FollowController.followDao.findAllFollows()
             .then(follows => res.json(follows));
 
     /**
