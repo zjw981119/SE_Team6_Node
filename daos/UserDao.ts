@@ -65,7 +65,7 @@ export default class UserDao implements UserDaoI {
      * @returns {Promise} To be notified when user is removed from the database
      */
     public deleteUserByUsername = async (username: string): Promise<any> =>
-        UserModel.deleteOne({username: username});
+        UserModel.deleteMany({username: username});
 
     /**
      * Updates user with new values in database

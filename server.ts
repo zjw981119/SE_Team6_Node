@@ -22,7 +22,7 @@ import LikeController from "./controllers/LikeController";
 import FollowController from "./controllers/FollowController";
 import BookmarkController from "./controllers/BookmarkController";
 import MessageController from "./controllers/MessageController";
-const app = express();
+var cors = require('cors')
 
 //read database username && password through process.env
 const dotenv = require("dotenv")
@@ -63,8 +63,10 @@ mongoose.connection.once("open", function(){
 })
 
 
-
-app.use(bodyParser.json())
+const app = express();
+app.use(express.json())
+//cross network domain
+app.use(cors())
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
 
@@ -80,5 +82,9 @@ const followController = FollowController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const messageController = MessageController.getInstance(app);
 
+/**
+ * Start a server listening at port 4000 locally
+ * but use environment variable PORT on Heroku if available.
+ */
 const PORT = 4000;
 app.listen(process.env.PORT || PORT);
