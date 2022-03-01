@@ -57,7 +57,7 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
  * This is for Assignment 3
  */
 mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
-     + '@cluster0.yzklt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+     + '@cluster0.lyb73.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
