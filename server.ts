@@ -15,7 +15,6 @@
  */
 import express from 'express';
 import mongoose from "mongoose";
-import bodyParser from "body-parser";
 import UserController from "./controllers/UserController";
 import TuitController from "./controllers/TuitController";
 import LikeController from "./controllers/LikeController";
@@ -67,6 +66,7 @@ const app = express();
 app.use(express.json())
 //cross network domain
 app.use(cors())
+
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
 
