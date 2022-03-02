@@ -93,4 +93,8 @@ export default class TuitDao implements TuitDaoI {
             {_id: tid},
             {$set: tuit});
 
+
+    // just for test, delete tuit by content
+    public deleteTuitByContent = async (tuit: string): Promise<any> =>
+        TuitModel.deleteMany({tuit:tuit});
 }
