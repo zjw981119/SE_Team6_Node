@@ -35,7 +35,9 @@ export default class TuitDao implements TuitDaoI {
      * @returns {Promise} To be notified when the tuits are retrieved from database
      */
     public findAllTuits = async (): Promise<Tuit[]> =>
-        TuitModel.find().exec();
+        TuitModel.find()
+            .populate("postedBy")
+            .exec();
 
     //Populated paths are no longer set to their original _id ,
     //their value is replaced with the mongoose document returned from the database
@@ -59,6 +61,7 @@ export default class TuitDao implements TuitDaoI {
     public findTuitsByUser=async(uid: string): Promise<Tuit[]> =>
          TuitModel
              .find({postedBy: uid})
+             .populate("postedBy")
              .exec();
 
     /**
