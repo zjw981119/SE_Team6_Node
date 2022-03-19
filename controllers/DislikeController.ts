@@ -12,10 +12,8 @@ import DislikeDao from "../daos/DislikeDao";
  * Defines the following HTTP endpoints:
  * <ul>
  *     <li>GET /users/:uid/dislikes to retrieve all the tuits disliked by a user </li>
- *     <li>GET /dislikes/tuits/:tid to retrieve all users that liked a tuit </li>
- *     <li>POST /users/:uid/likes/:tid to record that a user likes a tuit </li>
- *     <li>DELETE /users/:uid/likes/:tid to record that a user
- *     no londer likes a tuit</li>
+ *     <li>GET /users/:uid/dislikes/:tid to retrieve the dislike distance with particular user and tuit</li>
+ *     <li>PUT /users/:uid/dislikes/:tid to record that a user dislikes a tuit </li>
  * </ul>
  * @property {DislikeDao} dislikeDao Singleton DAO implementing dislikes CRUD operations
  * @property {DislikeController} dislikeController Singleton controller implementing
