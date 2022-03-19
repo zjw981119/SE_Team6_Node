@@ -80,7 +80,12 @@ export default class LikeDao implements LikeDaoI {
     public countHowManyLikedTuit = async (tid: string): Promise<any> =>
         LikeModel.count({tuit: tid});
 
-    // find out if a user has liked a particular tuit
+    /**
+     * Find out if a user has liked a particular tuit
+     * @param {string} uid User's primary key
+     * @param {string} tid Tuit's primary key
+     * @returns {Promise} To be notified when data is retrived from the database
+     */
     public findUserLikesTuit = async (uid: string, tid: string): Promise<any> =>
         LikeModel.findOne({tuit: tid, likedBy: uid});
 
