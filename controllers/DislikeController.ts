@@ -60,9 +60,17 @@ export default class DislikeController implements DislikeControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuit objects that were disliked
      */
-    findUserDislikesTuit = (req: Request, res: Response) =>
-        DislikeController.dislikeDao.findUserDislikesTuit(req.params.uid, req.params.tid)
+    findUserDislikesTuit = (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        const tid = req.params.tid;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ?
+            profile._id : uid;
+        DislikeController.dislikeDao.findUserDislikesTuit(userId, tid)
             .then(dislikes => res.json(dislikes))
+    }
+
 
     /**
      * @param {Request} req Represents request from client, including the
