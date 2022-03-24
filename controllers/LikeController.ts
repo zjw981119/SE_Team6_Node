@@ -85,6 +85,7 @@ export default class LikeController implements LikeControllerI {
     }
 
     /**
+     * Update tuit stats based on user's click event
      * @param {Request} req Represents request from client, including the
      * path parameters uid and tid representing the user that is liking the tuit
      * and the tuit being liked
