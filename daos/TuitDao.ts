@@ -36,6 +36,7 @@ export default class TuitDao implements TuitDaoI {
      */
     public findAllTuits = async (): Promise<Tuit[]> =>
         TuitModel.find()
+            .lean()
             .populate("postedBy")
             .exec();
 
@@ -61,6 +62,7 @@ export default class TuitDao implements TuitDaoI {
     public findTuitsByUser=async(uid: string): Promise<Tuit[]> =>
          TuitModel
              .find({postedBy: uid})
+             .lean() //use lean() tells Mongoose to skip instantiating a full Mongoose document and just give you the POJO
              .populate("postedBy")
              .exec();
 
