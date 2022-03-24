@@ -80,7 +80,7 @@ app.use(cors({
     credentials: true,
     // must whitelists allowed domains(if using credentials)
     origin: 'http://localhost:3000'
-}))
+}));
 
 //session configure
 let sess = {
