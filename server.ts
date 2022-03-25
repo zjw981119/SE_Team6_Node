@@ -83,9 +83,10 @@ app.use(cors({
     origin: 'https://unique-marigold-68692e.netlify.app'
 }));
 
+const SECRET = 'process.env.SECRET';
 //session configure
 let sess = {
-    secret: process.env.SECRET,
+    secret: SECRET,
     saveUninitialized: true,
     resave: true,
     cookie: {
@@ -93,13 +94,14 @@ let sess = {
     }
 }
 
-if (process.env.ENV === 'PRODUCTION') {
+if (process.env.ENVIRONMENT === 'PRODUCTION') {
     app.set('trust proxy', 1) // trust first proxy
     sess.cookie.secure = true // serve secure cookies
 }
 
 app.use(session(sess))
 app.use(express.json())
+
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
 
