@@ -79,8 +79,9 @@ app.use(cors({
     // support cookie header
     credentials: true,
     // must whitelists allowed domains(if using credentials)
-    origin: 'http://localhost:3000'
-}))
+    // http://localhost:3000
+    origin: 'https://unique-marigold-68692e.netlify.app'
+}));
 
 //session configure
 let sess = {
