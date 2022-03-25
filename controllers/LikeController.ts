@@ -6,6 +6,7 @@ import LikeDao from "../daos/LikeDao";
 import LikeControllerI from "../interfaces/likes/LikeControllerI";
 import TuitDao from "../daos/TuitDao";
 import DislikeDao from "../daos/DislikeDao";
+import Tuit from "../models/tuits/Tuit";
 
 /**
  * @class LikeController Implements RESTful Web service API for likes resource.
@@ -61,9 +62,24 @@ export default class LikeController implements LikeControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuit objects that were liked
      */
-    findAllTuitsLikedByUser = (req: Request, res: Response) =>
-        LikeController.likeDao.findAllTuitsLikedByUser(req.params.uid)
-            .then(likes => res.json(likes));
+    findAllTuitsLikedByUser = (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ?
+            profile._id : uid;
+
+        LikeController.likeDao.findAllTuitsLikedByUser(userId)
+            .then(async likes => {
+                // filter out likes with null tuit
+                const likesNonNullTuits = likes.filter(like => like.tuit);
+                // extract tuit objects and assign them to elements in the new array
+                const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
+                //update isLiked/isDisliked properties
+                await this.addProperty(tuitsFromLikes, userId)
+                res.json(tuitsFromLikes);
+            });
+    }
 
     /**
      * Retrieves the like data with particular user and tuit
@@ -131,6 +147,16 @@ export default class LikeController implements LikeControllerI {
             res.sendStatus(200);
         } catch (e) {
             res.sendStatus(404);
+        }
+    }
+
+    private async addProperty(tuits: Tuit[], userId: string) {
+        for (let i = 0; i < tuits.length; i++) {
+            const userAlreadyLikedTuit = await LikeController.likeDao.findUserLikesTuit(userId, tuits[i]._id);
+            const userAlreadyDislikedTuit = await LikeController.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
+            //update isliked/isDisliked property
+            tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
+            tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
         }
     }
 };
