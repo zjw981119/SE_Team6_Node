@@ -73,7 +73,7 @@ mongoose.connection.once("open", function(){
 
 
 const app = express();
-app.use(express.json())
+
 //cross network domain
 app.use(cors({
     // support cookie header
@@ -99,7 +99,7 @@ if (process.env.ENV === 'PRODUCTION') {
 }
 
 app.use(session(sess))
-
+app.use(express.json())
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
 
