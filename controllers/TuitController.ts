@@ -4,7 +4,9 @@
 import {Request, Response, Express} from "express";
 import TuitDao from "../daos/TuitDao";
 import TuitControllerI from "../interfaces/tuits/TuitControllerI";
+import LikeDao from "../daos/LikeDao";
 import Tuit from "../models/tuits/Tuit";
+import DislikeDao from "../daos/DislikeDao";
 
 /**
  * @class TuitController Implements RESTful Web service API for tuits resource.
@@ -23,6 +25,8 @@ import Tuit from "../models/tuits/Tuit";
  */
 export default class TuitController implements TuitControllerI {
     private tuitDao: TuitDao = TuitDao.getInstance();
+    private likeDao: LikeDao = LikeDao.getInstance();
+    private dislikeDao: DislikeDao = DislikeDao.getInstance();
     private static tuitController: TuitController | null = null;
 
     /**
@@ -55,9 +59,18 @@ export default class TuitController implements TuitControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuit objects
      */
-    findAllTuits = (req: Request, res: Response) =>
-        this.tuitDao.findAllTuits()
-            .then(tuits => res.json(tuits));
+    findAllTuits = async (req: Request, res: Response) => {
+        let tuits: Tuit[] = await this.tuitDao.findAllTuits()
+        // @ts-ignore
+        // user already login
+        if (req.session['profile']) {
+            // @ts-ignore
+            let userId = req.session['profile']._id;
+            //update isLiked && isDisliked property
+            await this.addProperty(tuits, userId);
+        }
+        res.json(tuits);
+    }
 
     /**
      * Retrieves all tuits from the database for a particular user and returns
@@ -66,14 +79,15 @@ export default class TuitController implements TuitControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuit objects
      */
-    findTuitsByUser = (req: Request, res: Response) => {
+    findTuitsByUser = async (req: Request, res: Response) => {
         // @ts-ignore
         let userId = req.params.uid === "my" && req.session['profile'] ?
             // @ts-ignore
             req.session['profile']._id : req.params.uid;
-
-        this.tuitDao.findTuitsByUser(userId)
-            .then((tuits: Tuit[]) => res.json(tuits));
+        let tuits: Tuit[] = await this.tuitDao.findTuitsByUser(userId)
+        //update isLiked && isDisliked property
+        await this.addProperty(tuits, userId);
+        return res.json(tuits);
     }
 
     /**
@@ -133,4 +147,14 @@ export default class TuitController implements TuitControllerI {
     deleteTuitByContent = (req: Request, res: Response) =>
         this.tuitDao.deleteTuitByContent(req.params.content)
             .then(status => res.json(status));
+
+    private async addProperty(tuits: Tuit[], userId: string) {
+        for (let i = 0; i < tuits.length; i++) {
+            const userAlreadyLikedTuit = await this.likeDao.findUserLikesTuit(userId, tuits[i]._id);
+            const userAlreadyDislikedTuit = await this.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
+            //update isliked/isDisliked property
+            tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
+            tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
+        }
+    }
 }

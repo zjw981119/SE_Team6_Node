@@ -22,6 +22,7 @@ import FollowController from "./controllers/FollowController";
 import BookmarkController from "./controllers/BookmarkController";
 import MessageController from "./controllers/MessageController";
 import AuthenticationController from "./controllers/AuthenticationController";
+import DislikeController from "./controllers/DislikeController";
 const cors = require('cors')
 const session = require("express-session");
 
@@ -73,14 +74,13 @@ mongoose.connection.once("open", function(){
 
 
 const app = express();
-app.use(express.json())
 //cross network domain
 app.use(cors({
     // support cookie header
     credentials: true,
     // must whitelists allowed domains(if using credentials)
     origin: 'http://localhost:3000'
-}))
+}));
 
 //session configure
 let sess = {
@@ -98,6 +98,7 @@ if (process.env.ENV === 'PRODUCTION') {
 }
 
 app.use(session(sess))
+app.use(express.json())
 
 app.get('/hello', (req, res) =>
     res.send('Hello World!'));
@@ -110,6 +111,7 @@ app.get('/add/:a/:b', (req, res) => {
 const userController = UserController.getInstance(app);
 const tuitController = TuitController.getInstance(app);
 const likeController = LikeController.getInstance(app);
+const dislikeController = DislikeController.getInstance(app);
 const followController = FollowController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const messageController = MessageController.getInstance(app);
