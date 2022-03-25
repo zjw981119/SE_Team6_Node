@@ -6,6 +6,7 @@ import LikeDao from "../daos/LikeDao";
 import TuitDao from "../daos/TuitDao";
 import DislikeControllerI from "../interfaces/dislikes/DislikeCotrollerI";
 import DislikeDao from "../daos/DislikeDao";
+import Tuit from "../models/tuits/Tuit";
 
 /**
  * @class DislikeController Implements RESTful Web service API for dislikes resource.
@@ -48,9 +49,25 @@ export default class DislikeController implements DislikeControllerI {
      * @param {Response} res Represents response to client, including the
      * body formatted as JSON arrays containing the tuit objects that were disliked
      */
-    findAllTuitsDislikedByUser = (req: Request, res: Response) =>
-        DislikeController.dislikeDao.findAllTuitsDislikedByUser(req.params.uid)
-            .then(dislikes => res.json(dislikes));
+    findAllTuitsDislikedByUser = (req: Request, res: Response) => {
+        const uid = req.params.uid;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ?
+            profile._id : uid;
+
+        DislikeController.dislikeDao.findAllTuitsDislikedByUser(userId)
+            .then( async dislikes => {
+                // filter out dislikes with null tuit
+                const dislikesNonNullTuits = dislikes.filter(like => like.tuit);
+                // extract tuit objects and assign them to elements in the new array
+                const tuitsFromLikes = dislikesNonNullTuits.map(like => like.tuit);
+                //update isLiked/isDisliked properties
+                await this.addProperty(tuitsFromLikes, userId)
+                res.json(tuitsFromLikes);
+            });
+    }
+
 
     /**
      * Retrieves the dislike data with particular user and tuit
@@ -118,6 +135,16 @@ export default class DislikeController implements DislikeControllerI {
             res.sendStatus(200);
         } catch (e) {
             res.sendStatus(404);
+        }
+    }
+
+    private async addProperty(tuits: Tuit[], userId: string) {
+        for (let i = 0; i < tuits.length; i++) {
+            const userAlreadyLikedTuit = await DislikeController.likeDao.findUserLikesTuit(userId, tuits[i]._id);
+            const userAlreadyDislikedTuit = await DislikeController.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
+            //update isliked/isDisliked property
+            tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
+            tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
         }
     }
 };
