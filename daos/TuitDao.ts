@@ -36,6 +36,7 @@ export default class TuitDao implements TuitDaoI {
      */
     public findAllTuits = async (): Promise<Tuit[]> =>
         TuitModel.find()
+            .lean()
             .populate("postedBy")
             .exec();
 
@@ -61,6 +62,7 @@ export default class TuitDao implements TuitDaoI {
     public findTuitsByUser=async(uid: string): Promise<Tuit[]> =>
          TuitModel
              .find({postedBy: uid})
+             .lean() //use lean() tells Mongoose to skip instantiating a full Mongoose document and just give you the POJO
              .populate("postedBy")
              .exec();
 
@@ -96,6 +98,17 @@ export default class TuitDao implements TuitDaoI {
             {_id: tid},
             {$set: tuit});
 
+    /**
+     * Updates the stats nested schema for a particular tuit
+     * @param {string} tid Primary key of tuit to be modified
+     * @param {any} newStats Nested schema representing tuits stats
+     * @returns {Promise} To be notified when tuit is updated in the database
+     */
+    public updateLikes = async (tid: string, newStats: any): Promise<any> =>
+        TuitModel.updateOne(
+            {_id: tid},
+            {$set: {stats: newStats}}
+        );
 
     // just for test, delete tuit by content
     public deleteTuitByContent = async (tuit: string): Promise<any> =>
