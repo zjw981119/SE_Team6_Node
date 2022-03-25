@@ -80,7 +80,7 @@ app.use(cors({
     credentials: true,
     // must whitelists allowed domains(if using credentials)
     // http://localhost:3000
-    origin: 'https://unique-marigold-68692e.netlify.app'
+    origin: ['http://localhost:3000','https://unique-marigold-68692e.netlify.app']
 }));
 
 const SECRET = 'process.env.SECRET';
