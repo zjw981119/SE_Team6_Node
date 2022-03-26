@@ -91,9 +91,9 @@ let sess = {
     saveUninitialized: true,
     resave: true,
     cookie: {
-        secure: true,
+        secure: false,
         // allow cookies to be sent in all contexts
-        sameSite: 'none'
+        sameSite: "none"
     }
 }
 
