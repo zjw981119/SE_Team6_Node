@@ -90,10 +90,11 @@ let sess = {
     secret: SECRET,
     saveUninitialized: true,
     resave: true,
+    proxy: true,
     cookie: {
-        secure: false,
+        secure: true,
         // allow cookies to be sent in all contexts
-        sameSite: "none"
+        sameSite: 'none'
     }
 }
 
