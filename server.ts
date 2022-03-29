@@ -36,7 +36,6 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
  */
 
 /*
- * connect to remote mongoDB database
  * mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
  *     +'@cluster0.wenpq.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
  *
@@ -44,7 +43,6 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
  */
 
 /*
- * connect to remote mongoDB database
  * mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
  * + '@cluster0.yzklt.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
  *
@@ -52,7 +50,6 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
  */
 
 /*
- * connect to remote mongoDB database
  * mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
  * + '@cluster0.lyb73.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
  *
@@ -60,14 +57,20 @@ mongoose.connect('mongodb://localhost:27017/tuiter');
  */
 
 /*
- * connect to remote mongoDB database
  * mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
  * + '@cluster0.iylq3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
  *
  * This is for Assignment 4
  */
+
+/*
+ *  mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
+ *       + '@cluster0.lhdzm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+ *
+ * This is for final project
+ */
 mongoose.connect('mongodb+srv://' + process.env.DB_USERNAME + ':' + process.env.DB_PASSWORD
-     + '@cluster0.iylq3.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
+     + '@cluster0.lhdzm.mongodb.net/myFirstDatabase?retryWrites=true&w=majority');
 mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
