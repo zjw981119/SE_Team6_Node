@@ -4,6 +4,7 @@
 import {Express, Request, Response} from "express";
 import MessageControllerI from "../interfaces/messages/MessageControllerI";
 import MessageDao from "../daos/MessageDao";
+import UserDao from "../daos/UserDao";
 
 /**
  * @class MessageController Implements RESTful Web service API for messages resource.
@@ -11,6 +12,7 @@ import MessageDao from "../daos/MessageDao";
  * <ul>
  *     <li>GET /users/:uid/messages to retrieve all the messages that sent from a user </li>
  *     <li>GET /messages/users/:uid to retrieve all the messages that sent to a user </li>
+ *     <li>GET /messages/contacts to retrieve all the contacts excluding login user </li>
  *     <li>POST /users/:uid/messages/:uid to record that a user sends message to another user </li>
  *     <li>DELETE /messages/:mid to record that a message being deleted </li>
  * </ul>
@@ -19,6 +21,7 @@ import MessageDao from "../daos/MessageDao";
  * RESTful Web service API
  */
 export default class MessageController implements MessageControllerI {
+    private static userDao: UserDao = UserDao.getInstance();
     private static messageDao: MessageDao = MessageDao.getInstance();
     private static messageController: MessageController | null = null;
     /**
@@ -31,6 +34,7 @@ export default class MessageController implements MessageControllerI {
             MessageController.messageController = new MessageController();
             app.get("/users/:uid/messages", MessageController.messageController.findAllMessagesSentByUser);
             app.get("/messages/users/:uid", MessageController.messageController.findAllMessagesSentToUser);
+            app.get("/messages/:uid/contacts", MessageController.messageController.findAllContacts);
             app.post("/users/:uid1/messages/:uid2", MessageController.messageController.userSendsMessage);
             app.delete("/messages/:mid", MessageController.messageController.userDeletesMessage);
         }
@@ -60,6 +64,28 @@ export default class MessageController implements MessageControllerI {
     findAllMessagesSentToUser = (req: Request, res: Response) =>
         MessageController.messageDao.findAllMessagesSentToUser(req.params.uid)
             .then(follows => res.json(follows));
+
+    /**
+     * Retrieve all the contacts of the login user
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the user objects
+     */
+    findAllContacts = async (req: Request, res: Response) => {
+        // @ts-ignore
+        let userId = req.params.uid === "my" && req.session['profile'] ?
+            // @ts-ignore
+            req.session['profile']._id : req.params.uid;
+        // avoid server crash
+        if (userId === "my") {
+            res.sendStatus(503);
+            return;
+        }
+        const contacts = await MessageController.userDao.findAllContacts(userId);
+        return res.json(contacts);
+    }
+
 
     /**
      * @param {Request} req Represents request from client, including the

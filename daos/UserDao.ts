@@ -35,6 +35,12 @@ export default class UserDao implements UserDaoI {
     public findAllUsers = async (): Promise<User[]> =>
         UserModel.find().exec();
 
+    public findAllContacts = async (uid: string): Promise<User[]> =>
+        UserModel.find({_id: { $ne: uid }}).select([
+            "_id",
+            "username",
+            "email",
+        ]).exec();
     /**
      * Retrieve single user document from users collection
      * @param {string} uid User's primary key
@@ -67,7 +73,6 @@ export default class UserDao implements UserDaoI {
      */
     public deleteUser = async (uid: string): Promise<any> =>
         UserModel.deleteOne({_id: uid});
-
 
 
     /**
