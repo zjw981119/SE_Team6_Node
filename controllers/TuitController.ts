@@ -84,6 +84,11 @@ export default class TuitController implements TuitControllerI {
         let userId = req.params.uid === "my" && req.session['profile'] ?
             // @ts-ignore
             req.session['profile']._id : req.params.uid;
+        // avoid server crash
+        if (userId === "my") {
+            res.sendStatus(503);
+            return;
+        }
         let tuits: Tuit[] = await this.tuitDao.findTuitsByUser(userId)
         //update isLiked && isDisliked property
         await this.addProperty(tuits, userId);
@@ -116,7 +121,11 @@ export default class TuitController implements TuitControllerI {
         let userId = req.params.uid === "my" && req.session['profile'] ?
             // @ts-ignore
             req.session['profile']._id : req.params.uid;
-
+        // avoid server crash
+        if (userId === "my") {
+            res.sendStatus(503);
+            return;
+        }
         this.tuitDao.createTuitByUser(userId, req.body)
             .then(tuit => res.json(tuit));
     }

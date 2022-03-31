@@ -84,7 +84,7 @@ app.use(cors({
     credentials: true,
     // must whitelists allowed domains(if using credentials)
     // http://localhost:3000
-    origin: ['http://localhost:3000','https://unique-marigold-68692e.netlify.app']
+    origin: ['http://localhost:3000', process.env.CORS_ORIGIN]
 }));
 
 const SECRET = 'process.env.SECRET';
@@ -93,17 +93,15 @@ let sess = {
     secret: SECRET,
     saveUninitialized: true,
     resave: true,
-    proxy: true,
     cookie: {
-        secure: true,
-        // allow cookies to be sent in all contexts
-        sameSite: 'none'
+        secure: process.env.NODE_ENV === "production",
+        // sameSite: none allows cookies to be sent in all contexts
+        sameSite: process.env.NODE_ENV === "production" ? 'none' : 'lax',
     }
 }
 
-if (process.env.ENVIRONMENT === 'PRODUCTION') {
+if (process.env.NODE_ENV === 'production') {
     app.set('trust proxy', 1) // trust first proxy
-    sess.cookie.secure = true // serve secure cookies
 }
 
 app.use(session(sess))
