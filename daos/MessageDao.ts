@@ -18,12 +18,14 @@ export default class MessageDao implements MessageDaoI {
      * @returns messageDao
      */
     public static getInstance = (): MessageDao => {
-        if(MessageDao.messageDao === null) {
+        if (MessageDao.messageDao === null) {
             MessageDao.messageDao = new MessageDao();
         }
         return MessageDao.messageDao;
     }
-    private constructor() {}
+
+    private constructor() {
+    }
 
     /**
      * Retrieve all messages that sent by a user
@@ -43,6 +45,27 @@ export default class MessageDao implements MessageDaoI {
     public findAllMessagesSentToUser = async (uid: string): Promise<Message[]> =>
         MessageModel
             .find({sentTo: uid})
+            .exec();
+
+    /**
+     * Retrieve all messages that sent to a user
+     * @param {string} uid1 User's primary key
+     * @param {string} uid2 User's primary key
+     * @returns {Promise} To be notified when the messages are retrieved from database
+     */
+    public findAllMessages = async (uid1: string, uid2: string): Promise<Message[]> =>
+        MessageModel
+            .find(
+                {
+                    // find all messages between two users
+                    $or: [
+                        {sentFrom: uid1, sentTo: uid2},
+                        {sentFrom: uid2, sentTo: uid1}
+                    ]
+                }
+            )
+            // sort by sentOn time in ascending order
+            .sort({sentOn: 1})
             .exec();
 
     /**
