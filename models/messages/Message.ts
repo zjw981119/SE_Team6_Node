@@ -1,14 +1,14 @@
 import User from "../users/User";
 
 /**
- * @class Message Represents a message sent by a user to another user
- * @property {string} tuit tuit's content
- * @property {Date} postedOn tuit's creation time
- * @property {ObjectId} postedBy user reference
+ * @property {string} message message's content
+ * @property {User} sentFrom message's sender
+ * @property {User} sentTo message's receiver
+ * @property {Date} sentOn message's creation time
  */
-export default class Message{
-    private content: string = '';
-    private sentFrom: User | null = null;
-    private sentTo: User | null = null;
-    private sentOn: Date = new Date();
+export default interface Message{
+    message: string;
+    sentFrom: User;
+    sentTo: User;
+    sentOn: Date;
 }
