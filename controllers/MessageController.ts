@@ -35,7 +35,7 @@ export default class MessageController implements MessageControllerI {
             app.get("/users/:uid/messages", MessageController.messageController.findAllMessagesSentByUser);
             app.get("/messages/users/:uid", MessageController.messageController.findAllMessagesSentToUser);
             app.get("/messages/:uid/contacts", MessageController.messageController.findAllContacts);
-            app.post("/users/:uid1/messages/:uid2", MessageController.messageController.userSendsMessage);
+            app.post("/users/:sender/messages/:receiver", MessageController.messageController.userSendsMessage);
             app.delete("/messages/:mid", MessageController.messageController.userDeletesMessage);
         }
         return MessageController.messageController;
@@ -95,9 +95,21 @@ export default class MessageController implements MessageControllerI {
      * body formatted as JSON containing the new message that was inserted in the
      * database
      */
-    userSendsMessage = (req: Request, res: Response) =>
-        MessageController.messageDao.userSendsMessage(req.params.uid1, req.params.uid2, req.body)
-            .then(follows => res.json(follows));
+    userSendsMessage = (req: Request, res: Response) => {
+        // @ts-ignore
+        let senderId = req.params.sender === "me" && req.session['profile'] ?
+            // @ts-ignore
+            req.session['profile']._id : req.params.sender;
+        let receiverId = req.params.receiver;
+        // avoid server crash
+        if (senderId === "me") {
+            res.sendStatus(503);
+            return;
+        }
+        MessageController.messageDao.userSendsMessage(senderId, receiverId, req.body)
+            .then(message => res.json(message));
+    }
+
 
     /**
      * @param {Request} req Represents request from client, including the
