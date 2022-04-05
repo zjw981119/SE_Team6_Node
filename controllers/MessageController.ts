@@ -91,6 +91,7 @@ export default class MessageController implements MessageControllerI {
         //add fromSelf property to message
         const modifiedMessages = messages.map((msg) => {
                 return {
+                    _id: msg._id,
                     fromSelf: msg.sentFrom.toString() === loginUserId,
                     message: msg.message
                 }

@@ -7,6 +7,7 @@ import User from "../users/User";
  * @property {Date} sentOn message's creation time
  */
 export default interface Message{
+    _id?: string;
     message: string;
     sentFrom: User;
     sentTo: User;
