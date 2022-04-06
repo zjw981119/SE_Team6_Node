@@ -23,6 +23,8 @@ import BookmarkController from "./controllers/BookmarkController";
 import MessageController from "./controllers/MessageController";
 import AuthenticationController from "./controllers/AuthenticationController";
 import DislikeController from "./controllers/DislikeController";
+
+const socket = require("socket.io");
 const cors = require('cors')
 const session = require("express-session");
 
@@ -75,10 +77,9 @@ mongoose.connection.once("open", function(){
     console.log("Database connected successfully");
 })
 
-
 const app = express();
 
-//cross network domain
+// cross network region
 app.use(cors({
     // support cookie header
     credentials: true,
@@ -123,9 +124,50 @@ const followController = FollowController.getInstance(app);
 const bookmarkController = BookmarkController.getInstance(app);
 const messageController = MessageController.getInstance(app);
 AuthenticationController(app);
+
 /**
  * Start a server listening at port 4000 locally
  * but use environment variable PORT on Heroku if available.
  */
 const PORT = 4000;
-app.listen(process.env.PORT || PORT);
+const server = app.listen(process.env.PORT || PORT);
+
+// create io, pass a http.Server instance to socket
+const io = socket(server, {
+    cors: {
+        // support cookie header
+        credentials: true,
+        // must whitelists allowed domains(if using credentials)
+        // http://localhost:3000
+        origin: ['http://localhost:3000', process.env.CORS_ORIGIN]
+    }
+})
+
+let onlineUsers = new Map();
+// create connection with client
+io.on("connection", (socket: any) => {
+
+    let uid = '';
+    //add online users
+    socket.on("addUser", (userId: string) => {
+        uid = userId
+        onlineUsers.set(userId, socket.id);
+    });
+
+    // send message
+    socket.on("sendMsg", (data: any) =>{
+        // find receiver
+        const receiverSocket = onlineUsers.get(data.sentTo);
+        if(receiverSocket){
+            // use socket to send received message to receiver
+            socket.to(receiverSocket).emit("receiveMsg", data.message);
+        }
+    });
+
+    //disconnect
+    socket.on("disconnect", () => {
+        //delete user
+        onlineUsers.delete(uid);
+    })
+
+})
