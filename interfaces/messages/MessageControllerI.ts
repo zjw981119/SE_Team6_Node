@@ -7,6 +7,7 @@ import {Request, Response} from "express";
 export default interface MessageControllerI {
     findAllMessagesSentByUser (req: Request, res: Response): void;
     findAllMessagesSentToUser (req: Request, res: Response): void;
+    findAllMessages (req: Request, res: Response): void;
     userSendsMessage (req: Request, res: Response): void;
     userDeletesMessage (req: Request, res: Response): void;
     findAllContacts (req: Request, res: Response): void;
