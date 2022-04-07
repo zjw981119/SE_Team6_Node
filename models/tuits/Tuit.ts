@@ -9,6 +9,7 @@ import Stats from "./Stats";
  */
 export default interface Tuit{
     _id?: string;
+    tag?: string;
     tuit: string;
     postedOn: Date;
     postedBy: User;
