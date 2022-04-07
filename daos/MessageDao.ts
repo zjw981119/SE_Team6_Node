@@ -47,14 +47,14 @@ export default class MessageDao implements MessageDaoI {
 
     /**
      * Inserts follow instance into the database
-     * @param {string} uid1 User's primary key
-     * @param {string} uid2 User's primary key
+     * @param {string} sender User's primary key
+     * @param {string} receiver User's primary key
      * @param {Message} message Instance to be inserted into the database
      * @returns {Promise} To be notified when message is inserted into the database
      */
-    public userSendsMessage = async (uid1: string, uid2: string, message: Message): Promise<Message> =>
+    public userSendsMessage = async (sender: string, receiver: string, message: Message): Promise<Message> =>
         //use "..." to parse object into key-value pairs instead of casting message object to string
-        MessageModel.create({...message, sentFrom: uid1, sentTo: uid2});
+        MessageModel.create({...message, sentFrom: sender, sentTo: receiver});
 
     /**
      * Removes follow instance from the database
