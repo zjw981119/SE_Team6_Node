@@ -39,6 +39,9 @@ export default class MessageController implements MessageControllerI {
             app.get("/messages/:uid/contacts", MessageController.messageController.findAllContacts);
             app.post("/users/:sender/messages/:receiver", MessageController.messageController.userSendsMessage);
             app.delete("/messages/:mid", MessageController.messageController.userDeletesMessage);
+
+            //for testing, not RESTful
+            app.delete("/messages/content/:content/delete", MessageController.messageController.deleteMsgByContent);
         }
         return MessageController.messageController;
     }
@@ -156,4 +159,9 @@ export default class MessageController implements MessageControllerI {
     userDeletesMessage = (req: Request, res: Response) =>
         MessageController.messageDao.userDeletesMessage(req.params.mid)
             .then(status => res.send(status));
+
+    // just for test, delete messages by content
+    deleteMsgByContent = (req: Request, res: Response) =>
+        MessageController.messageDao.deleteMsgByContent(req.params.content)
+            .then(status => res.json(status));
 };
