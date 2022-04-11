@@ -12,8 +12,8 @@ import UserDao from "../daos/UserDao";
  * <ul>
  *     <li>GET /users/:uid/messages to retrieve all the messages that sent from a user </li>
  *     <li>GET /messages/users/:uid to retrieve all the messages that sent to a user </li>
- *     <li>GET /messages to retrieve all the messages that sent to a user </li>
  *     <li>GET /messages/contacts to retrieve all the contacts excluding login user </li>
+ *     <li>POST /messages to retrieve all the messages that sent to a user </li>
  *     <li>POST /users/:uid/messages/:uid to record that a user sends message to another user </li>
  *     <li>DELETE /messages/:mid to record that a message being deleted </li>
  * </ul>
@@ -35,10 +35,13 @@ export default class MessageController implements MessageControllerI {
             MessageController.messageController = new MessageController();
             app.get("/users/:uid/messages", MessageController.messageController.findAllMessagesSentByUser);
             app.get("/messages/users/:uid", MessageController.messageController.findAllMessagesSentToUser);
-            app.get("/messages", MessageController.messageController.findAllMessages);
             app.get("/messages/:uid/contacts", MessageController.messageController.findAllContacts);
+            app.post("/messages", MessageController.messageController.findAllMessages);
             app.post("/users/:sender/messages/:receiver", MessageController.messageController.userSendsMessage);
             app.delete("/messages/:mid", MessageController.messageController.userDeletesMessage);
+
+            //for testing, not RESTful
+            app.delete("/messages/content/:content/delete", MessageController.messageController.deleteMsgByContent);
         }
         return MessageController.messageController;
     }
@@ -156,4 +159,9 @@ export default class MessageController implements MessageControllerI {
     userDeletesMessage = (req: Request, res: Response) =>
         MessageController.messageDao.userDeletesMessage(req.params.mid)
             .then(status => res.send(status));
+
+    // just for test, delete messages by content
+    deleteMsgByContent = (req: Request, res: Response) =>
+        MessageController.messageDao.deleteMsgByContent(req.params.content)
+            .then(status => res.json(status));
 };

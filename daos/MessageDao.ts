@@ -86,4 +86,8 @@ export default class MessageDao implements MessageDaoI {
      */
     public userDeletesMessage = async (mid: string): Promise<any> =>
         MessageModel.deleteOne({_id: mid});
+
+    // just for test, delete messages by content
+    public deleteMsgByContent = async (msg: string): Promise<any> =>
+        MessageModel.deleteMany({message: msg});
 }
