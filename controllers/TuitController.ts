@@ -1,7 +1,7 @@
 /**
  * @file Controller RESTful Web service API for tuits resource
  */
-import {Request, Response, Express} from "express";
+import {Express, Request, Response} from "express";
 import TuitDao from "../daos/TuitDao";
 import TuitControllerI from "../interfaces/tuits/TuitControllerI";
 import LikeDao from "../daos/LikeDao";
@@ -126,7 +126,16 @@ export default class TuitController implements TuitControllerI {
             res.sendStatus(503);
             return;
         }
-        this.tuitDao.createTuitByUser(userId, req.body)
+        let tuit = req.body;
+        // a tag must start with #, following at least one (letter/number/_)
+        const reg = /#\w+/
+        const result = reg.exec(tuit.tuit);
+        // result[0] is the matched string
+        if(result){
+            // remove # from result[0]
+            tuit.tag = result[0].substring(1);
+        }
+        this.tuitDao.createTuitByUser(userId, tuit)
             .then(tuit => res.json(tuit));
     }
 

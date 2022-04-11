@@ -18,6 +18,7 @@ import Tuit from "../../models/tuits/Tuit";
  */
 const TuitSchema = new mongoose.Schema<Tuit>({
     tuit: {type: String, required: true},
+    tag: {type: String, default: ""},
     postedOn: {type: Date, default: Date.now},
     postedBy: {type: Schema.Types.ObjectId, ref: "UserModel"},
     // initialize tuit's stats attribute
@@ -27,6 +28,6 @@ const TuitSchema = new mongoose.Schema<Tuit>({
         likes: {type: Number, default: 0},
         dislikes: {type: Number, default: 0}
     }
-},{collection: 'tuits'});
+}, {collection: 'tuits'});
 
 export default TuitSchema;
