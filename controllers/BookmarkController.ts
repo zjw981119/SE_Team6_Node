@@ -85,27 +85,14 @@ export default class BookmarkController implements BookmarkControllerI {
             profile._id : uid;
 
         const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId);
-        // filter out null tuits
-        const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark => bookmark.bookmarkedTuit);
-        // filter tuits by tag
-        const bookmarkTuitsBasedOnTags = bookmarkedNonNullTuits.map((tuit) => {
-            if(tuit.bookmarkedTuit.tag == req.params.tag){
-                return tuit.bookmarkedTuit
-            }
-        })
+        // filter out null tuits && tag
+        const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark =>
+            bookmark.bookmarkedTuit && bookmark.bookmarkedTuit.tag == req.params.tag
+        );
+        // extract tuit object from bookmark object
+        const bookmarkTuitsBasedOnTags = bookmarkedNonNullTuits.map(tuit => tuit.bookmarkedTuit)
         return res.json(bookmarkTuitsBasedOnTags)
     }
-
-
-        // const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(req.params.uid);
-        // const bookmarkTuitsBasedOnTags = bookmarkedTuits.map((tuit) => {
-        //     if(tuit.bookmarkedTuit.tag == req.params.tag)
-        //         return {
-        //             tuit: tuit.bookmarkedTuit,
-        //         }
-        // })
-        // return res.json(bookmarkTuitsBasedOnTags)
-    // }
 
 
     /**
