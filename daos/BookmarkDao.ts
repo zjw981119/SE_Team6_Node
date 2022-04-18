@@ -33,8 +33,17 @@ export default class BookmarkDao implements BookmarkDaoI {
     public findAllTuitsBookmarkedByUser = async (uid: string): Promise<Bookmark[]> =>
         BookmarkModel
             .find({bookmarkedBy: uid})
-            .populate("bookmarkedTuit")
+            .lean()
+            .populate({
+                path: "tuit",
+                populate:{
+                    path: "postedBy"
+                }
+            })
             .exec();
+    //check
+            // .populate("bookmarkedTuit")
+            // .exec();
 
     /**
      * Inserts bookmark instance into the database
