@@ -35,7 +35,7 @@ export default class BookmarkController implements BookmarkControllerI {
             app.get("/users/:uid/bookmarks/:tag", BookmarkController.bookmarkController.findTuitsBookmarkedBasedOnTags);
 
 
-            app.post("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userBookmarksTuit);
+            app.put("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userBookmarksTuit);
             app.delete("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userUnbookmarksTuit);
         }
         return BookmarkController.bookmarkController;
@@ -58,7 +58,15 @@ export default class BookmarkController implements BookmarkControllerI {
         const userId = uid === "me" && profile ?
             profile._id : uid;
         BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId)
-            .then(bookmarks => res.json(bookmarks));
+            .then(async bookmarks => {
+                // filter out null tuits
+                const bookmarkedNonNullTuits = bookmarks.filter(bookmark => bookmark.bookmarkedTuit);
+                // extract tuit objects and assign them to elements in the new array
+                const tuitsFromBookmarks = bookmarkedNonNullTuits.map(bookmark => bookmark.bookmarkedTuit);
+                //update isLiked/isDisliked properties
+                // await this.addProperty(tuitsFromLikes, userId)
+                res.json(tuitsFromBookmarks);
+            });
     }
 
     /**
@@ -77,11 +85,13 @@ export default class BookmarkController implements BookmarkControllerI {
             profile._id : uid;
 
         const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId);
-        const bookmarkTuitsBasedOnTags = bookmarkedTuits.map((tuit) => {
-            if(tuit.bookmarkedTuit.tag == req.params.tag)
-                return {
-                    tuit: tuit.bookmarkedTuit,
-                }
+        // filter out null tuits
+        const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark => bookmark.bookmarkedTuit);
+        // filter tuits by tag
+        const bookmarkTuitsBasedOnTags = bookmarkedNonNullTuits.map((tuit) => {
+            if(tuit.bookmarkedTuit.tag == req.params.tag){
+                return tuit.bookmarkedTuit
+            }
         })
         return res.json(bookmarkTuitsBasedOnTags)
     }

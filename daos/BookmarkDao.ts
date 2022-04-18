@@ -35,15 +35,12 @@ export default class BookmarkDao implements BookmarkDaoI {
             .find({bookmarkedBy: uid})
             .lean()
             .populate({
-                path: "tuit",
+                path: "bookmarkedTuit",
                 populate:{
                     path: "postedBy"
                 }
             })
             .exec();
-    //check
-            // .populate("bookmarkedTuit")
-            // .exec();
 
     /**
      * Inserts bookmark instance into the database
