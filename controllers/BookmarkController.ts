@@ -4,15 +4,15 @@
 import {Express, Request, Response} from "express";
 import BookmarkControllerI from "../interfaces/bookmarks/BookmarkControllerI";
 import BookmarkDao from "../daos/BookmarkDao";
+import TuitDao from "../daos/TuitDao";
 
 /**
  * @class BookmarkController Implements RESTful Web service API for bookmarks resource.
  * Defines the following HTTP endpoints:
  * <ul>
  *     <li>GET /users/:uid/bookmarks to retrieve all the tuits bookmarked by a user </li>
- *     <li>POST /users/:uid/bookmarks/:tid to record that a user bookmarks a tuit </li>
- *     <li>DELETE /users/:uid/bookmarks/:tid to record that a user
- *     no londer bookmarks a tuit</li>
+ *     <li>GET /users/:uid/bookmarks/:tags to retrieve all the tuits with a particular tag bookmarked by a user </li>
+ *     <li>PUT /users/:uid/bookmarks/:tid to record that a user toggles bookmarks in a tuit </li>
  * </ul>
  * @property {BookmarkDao} bookmarkDao Singleton DAO implementing bookmarks CRUD operations
  * @property {BookmarkController} bookmarkController Singleton controller implementing
@@ -21,6 +21,7 @@ import BookmarkDao from "../daos/BookmarkDao";
 export default class BookmarkController implements BookmarkControllerI {
     private static bookmarkDao: BookmarkDao = BookmarkDao.getInstance();
     private static bookmarkController: BookmarkController | null = null;
+    private static tuitDao: TuitDao = TuitDao.getInstance();
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
@@ -35,8 +36,7 @@ export default class BookmarkController implements BookmarkControllerI {
             app.get("/users/:uid/bookmarks/:tag", BookmarkController.bookmarkController.findTuitsBookmarkedBasedOnTags);
 
 
-            app.put("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userBookmarksTuit);
-            app.delete("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userUnbookmarksTuit);
+            app.put("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userTogglesTuitBookmarks);
         }
         return BookmarkController.bookmarkController;
     }
@@ -51,7 +51,6 @@ export default class BookmarkController implements BookmarkControllerI {
      * body formatted as JSON arrays containing the tuits objects
      */
     findAllTuitsBookmarkedByUser = (req: Request, res: Response) => {
-
         const uid = req.params.uid;
         // @ts-ignore
         const profile = req.session['profile'];
@@ -77,7 +76,6 @@ export default class BookmarkController implements BookmarkControllerI {
      * body formatted as JSON arrays containing the tuits objects filtered based on tags.
      */
     findTuitsBookmarkedBasedOnTags = async(req: Request, res: Response) =>{
-
         const uid = req.params.uid;
         // @ts-ignore
         const profile = req.session['profile'];
@@ -103,45 +101,41 @@ export default class BookmarkController implements BookmarkControllerI {
      * body formatted as JSON containing the new bookmark that was inserted in the
      * database
      */
-    userBookmarksTuit = (req: Request, res: Response) => {
+    userTogglesTuitBookmarks = async (req: Request, res: Response) => {
+        const tuitDao = BookmarkController.tuitDao;
+        const bookmarkDao = BookmarkController.bookmarkDao;
         const uid = req.params.uid;
         // @ts-ignore
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ?
             profile._id : uid;
-
-        BookmarkController.bookmarkDao.userBookmarksTuit(userId, req.params.tid)
-            .then(async bookmarks => {
-                // // filter out likes with null tuit
-                // const nonBookamrk = bookmarks.filter(bookmarks => bookmarks.tuit);
-                // // extract tuit objects and assign them to elements in the new array
-                // const bookmarked = nonBookamrk.map(bookmarks => bookmarks.tuit);
-                // //update isLiked/isDisliked properties
-                // await this.addProperty(bookmarked, userId)
-                res.json(bookmarks);
-            });
-        //
-        //
-        // BookmarkController.bookmarkDao.userBookmarksTuit(req.params.uid, req.params.tid)
-        //     .then(bookmarks => res.json(bookmarks));
+        const tid = req.params.tid;
+        // avoid server crash
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
+        try {
+            // check if user already has bookmarked tuit
+            const userAlreadyBookmarkedTuit = await bookmarkDao.findUserBookmarksTuit(userId, tid);
+            const bookmarkNumber = await bookmarkDao.countHowManyBookmarkedTuit(tid);
+            let tuit = await tuitDao.findTuitById(tid);
+            // unbookmark tuit
+            if (userAlreadyBookmarkedTuit) {
+                await bookmarkDao.userUnbookmarksTuit(userId, tid);
+                tuit.stats.bookmarks = bookmarkNumber - 1;
+            } else {
+                // user bookmarks a tuit
+                await bookmarkDao.userBookmarksTuit(userId, tid);
+                tuit.stats.bookmarks = bookmarkNumber + 1;
+            }
+            // update tuit stats
+            await tuitDao.updateLikes(tid, tuit.stats);
+            res.sendStatus(200);
+        } catch (e) {
+            res.sendStatus(404);
+        }
     }
 
 
-    /**
-     * @param {Request} req Represents request from client, including the
-     * path parameters uid and tid representing the user that is unbookmarking
-     * the tuit and the tuit being unbookmarked
-     * @param {Response} res Represents response to client, including status
-     * on whether deleting the bookmark was successful or not
-     */
-    userUnbookmarksTuit = (req: Request, res: Response) => {
-        const uid = req.params.uid;
-        // @ts-ignore
-        const profile = req.session['profile'];
-        const userId = uid === "me" && profile ?
-            profile._id : uid;
-
-        BookmarkController.bookmarkDao.userUnbookmarksTuit(userId, req.params.tid)
-            .then(status => res.send(status));
-    }
 };
