@@ -5,6 +5,9 @@ import {Express, Request, Response} from "express";
 import BookmarkControllerI from "../interfaces/bookmarks/BookmarkControllerI";
 import BookmarkDao from "../daos/BookmarkDao";
 import TuitDao from "../daos/TuitDao";
+import Tuit from "../models/tuits/Tuit";
+import LikeDao from "../daos/LikeDao";
+import DislikeDao from "../daos/DislikeDao";
 
 /**
  * @class BookmarkController Implements RESTful Web service API for bookmarks resource.
@@ -19,9 +22,12 @@ import TuitDao from "../daos/TuitDao";
  * RESTful Web service API
  */
 export default class BookmarkController implements BookmarkControllerI {
+    private static tuitDao: TuitDao = TuitDao.getInstance();
+    private static likeDao: LikeDao = LikeDao.getInstance();
+    private static dislikeDao: DislikeDao = DislikeDao.getInstance();
     private static bookmarkDao: BookmarkDao = BookmarkDao.getInstance();
     private static bookmarkController: BookmarkController | null = null;
-    private static tuitDao: TuitDao = TuitDao.getInstance();
+
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
@@ -62,8 +68,8 @@ export default class BookmarkController implements BookmarkControllerI {
                 const bookmarkedNonNullTuits = bookmarks.filter(bookmark => bookmark.bookmarkedTuit);
                 // extract tuit objects and assign them to elements in the new array
                 const tuitsFromBookmarks = bookmarkedNonNullTuits.map(bookmark => bookmark.bookmarkedTuit);
-                //update isLiked/isDisliked properties
-                // await this.addProperty(tuitsFromLikes, userId)
+                //update isLiked/isDisliked/isBookmarked properties
+                await this.addProperty(tuitsFromBookmarks, userId)
                 res.json(tuitsFromBookmarks);
             });
     }
@@ -89,6 +95,8 @@ export default class BookmarkController implements BookmarkControllerI {
         );
         // extract tuit object from bookmark object
         const bookmarkTuitsBasedOnTags = bookmarkedNonNullTuits.map(tuit => tuit.bookmarkedTuit)
+        //update isLiked/isDisliked/isBookmarked properties
+        await this.addProperty(bookmarkTuitsBasedOnTags, userId)
         return res.json(bookmarkTuitsBasedOnTags)
     }
 
@@ -137,5 +145,16 @@ export default class BookmarkController implements BookmarkControllerI {
         }
     }
 
+    private async addProperty(tuits: Tuit[], userId: string) {
+        for (let i = 0; i < tuits.length; i++) {
+            const userAlreadyLikedTuit = await BookmarkController.likeDao.findUserLikesTuit(userId, tuits[i]._id);
+            const userAlreadyDislikedTuit = await BookmarkController.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
+            const userAlreadyBookmarkedTuit = await BookmarkController.bookmarkDao.findUserBookmarksTuit(userId, tuits[i]._id)
+            //add isliked/isDisliked/isBookmarked property
+            tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
+            tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
+            tuits[i].isBookmarked = Boolean(userAlreadyBookmarkedTuit)
+        }
+    }
 
 };
