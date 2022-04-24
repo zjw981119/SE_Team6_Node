@@ -7,6 +7,7 @@ import LikeControllerI from "../interfaces/likes/LikeControllerI";
 import TuitDao from "../daos/TuitDao";
 import DislikeDao from "../daos/DislikeDao";
 import Tuit from "../models/tuits/Tuit";
+import BookmarkDao from "../daos/BookmarkDao";
 
 /**
  * @class LikeController Implements RESTful Web service API for likes resource.
@@ -25,7 +26,9 @@ export default class LikeController implements LikeControllerI {
     private static likeDao: LikeDao = LikeDao.getInstance();
     private static dislikeDao: DislikeDao = DislikeDao.getInstance();
     private static tuitDao: TuitDao = TuitDao.getInstance();
+    private static bookmarkDao: BookmarkDao = BookmarkDao.getInstance();
     private static likeController: LikeController | null = null;
+
     /**
      * Creates singleton controller instance
      * @param {Express} app Express instance to declare the RESTful Web service API
@@ -75,7 +78,7 @@ export default class LikeController implements LikeControllerI {
                 const likesNonNullTuits = likes.filter(like => like.tuit);
                 // extract tuit objects and assign them to elements in the new array
                 const tuitsFromLikes = likesNonNullTuits.map(like => like.tuit);
-                //update isLiked/isDisliked properties
+                //update isLiked/isDisliked/isBookmarked properties
                 await this.addProperty(tuitsFromLikes, userId)
                 res.json(tuitsFromLikes);
             });
@@ -154,9 +157,11 @@ export default class LikeController implements LikeControllerI {
         for (let i = 0; i < tuits.length; i++) {
             const userAlreadyLikedTuit = await LikeController.likeDao.findUserLikesTuit(userId, tuits[i]._id);
             const userAlreadyDislikedTuit = await LikeController.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
-            //update isliked/isDisliked property
+            const userAlreadyBookmarkedTuit = await LikeController.bookmarkDao.findUserBookmarksTuit(userId, tuits[i]._id)
+            //add isliked/isDisliked/isBookmarked property
             tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
             tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
+            tuits[i].isBookmarked = Boolean(userAlreadyBookmarkedTuit)
         }
     }
 };
