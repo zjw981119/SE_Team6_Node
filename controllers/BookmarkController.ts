@@ -40,7 +40,7 @@ export default class BookmarkController implements BookmarkControllerI {
 
             //check
             app.get("/users/:uid/bookmarks/:tag", BookmarkController.bookmarkController.findTuitsBookmarkedBasedOnTags);
-
+            app.get("/users/:uid/tags", BookmarkController.bookmarkController.findAllTags)
 
             app.put("/users/:uid/bookmarks/:tid", BookmarkController.bookmarkController.userTogglesTuitBookmarks);
         }
@@ -98,6 +98,33 @@ export default class BookmarkController implements BookmarkControllerI {
         //update isLiked/isDisliked/isBookmarked properties
         await this.addProperty(bookmarkTuitsBasedOnTags, userId)
         return res.json(bookmarkTuitsBasedOnTags)
+    }
+
+    /**
+     * Retrieves all unique tags that bookmarked by a user from the database
+     * @param {Request} req Represents request from client, including the path
+     * parameter uid representing the user
+     * @param {Response} res Represents response to client, including the
+     * body formatted as JSON arrays containing the unique tags.
+     */
+    findAllTags = async(req: Request, res: Response) =>{
+        const uid = req.params.uid;
+        // @ts-ignore
+        const profile = req.session['profile'];
+        const userId = uid === "me" && profile ?
+            profile._id : uid;
+
+        const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId);
+        // filter out null tuits && tag
+        const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark =>
+            bookmark.bookmarkedTuit
+        );
+        // extract tag object from bookmark object
+        const bookmarkedTags = bookmarkedNonNullTuits.map(tuit => tuit.bookmarkedTuit.tag)
+        // Select only the unique elements from tags
+        const setOfBookmarkedTags = new Set(bookmarkedTags)
+        const uniqueValues = [...setOfBookmarkedTags]
+        return res.json(uniqueValues)
     }
 
 
