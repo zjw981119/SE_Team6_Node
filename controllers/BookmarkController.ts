@@ -15,6 +15,7 @@ import DislikeDao from "../daos/DislikeDao";
  * <ul>
  *     <li>GET /users/:uid/bookmarks to retrieve all the tuits bookmarked by a user </li>
  *     <li>GET /users/:uid/bookmarks/:tags to retrieve all the tuits with a particular tag bookmarked by a user </li>
+ *     <li>GET /users/:uid/tags to retrieve all the unique tags bookmarked by a user </li>
  *     <li>PUT /users/:uid/bookmarks/:tid to record that a user toggles bookmarks in a tuit </li>
  * </ul>
  * @property {BookmarkDao} bookmarkDao Singleton DAO implementing bookmarks CRUD operations
@@ -123,6 +124,7 @@ export default class BookmarkController implements BookmarkControllerI {
         const bookmarkedTags = bookmarkedNonNullTuits.map(tuit => tuit.bookmarkedTuit.tag)
         // Select only the unique elements from tags
         const setOfBookmarkedTags = new Set(bookmarkedTags)
+        // convert set to array
         const uniqueValues = [...setOfBookmarkedTags]
         return res.json(uniqueValues)
     }
