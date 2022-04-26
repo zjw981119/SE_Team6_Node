@@ -54,7 +54,7 @@ export default class DislikeDao implements DislikeDaoI {
         DislikeModel.create({tuit: tid, dislikedBy: uid});
 
     /**
-     * Removes dislikes instance related to one particular tuit from the database
+     * Removes dislikes instances related to one particular tuit from the database
      * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when dislikes are removed from the database
      */
