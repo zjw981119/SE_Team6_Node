@@ -61,6 +61,14 @@ export default class BookmarkDao implements BookmarkDaoI {
         BookmarkModel.deleteOne({bookmarkedTuit: tid, bookmarkedBy: uid});
 
     /**
+     * Removes bookmarks instances related to one particular tuit from the database
+     * @param {string} tid Tuit's primary key
+     * @returns {Promise} To be notified when bookmarks are removed from the database
+     */
+    public deleteAllBookmarksRelated = async (tid: string): Promise<any> =>
+        BookmarkModel.deleteMany({bookmarkedTuit: tid});
+
+    /**
      * Counts the total bookmarks a particular tuit has
      * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when total count is calculated
