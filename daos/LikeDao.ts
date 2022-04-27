@@ -74,6 +74,14 @@ export default class LikeDao implements LikeDaoI {
         LikeModel.deleteOne({tuit: tid, likedBy: uid});
 
     /**
+     * Removes likes instances related to one particular tuit from the database
+     * @param {string} tid Tuit's primary key
+     * @returns {Promise} To be notified when likes are removed from the database
+     */
+    public deleteAllLikesRelated = async (tid: string): Promise<any> =>
+        LikeModel.deleteMany({tuit: tid});
+
+    /**
      * Counts the total likes a particular tuit has
      * @param {string} tid Tuit's primary key
      * @returns {Promise} To be notified when total count is calculated

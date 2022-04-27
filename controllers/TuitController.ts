@@ -159,9 +159,16 @@ export default class TuitController implements TuitControllerI {
      * @param {Response} res Represents response to client, including status
      * on whether deleting a tuit was successful or not
      */
-    deleteTuit = (req: Request, res: Response) =>
-        this.tuitDao.deleteTuit(req.params.tid)
-            .then(status => res.json(status));
+    deleteTuit = (req: Request, res: Response) => {
+        const tid = req.params.tid;
+        const deleteTuit = this.tuitDao.deleteTuit(tid);
+        const deleteLikes = this.likeDao.deleteAllLikesRelated(tid);
+        const deleteDislikes = this.dislikeDao.deleteAllDislikesRelated(tid);
+        const deleteBookmarks = this.bookmarkDao.deleteAllBookmarksRelated(tid);
+        // when user delete a tuit, also need to delete all records related to this tuit
+        return Promise.all([deleteTuit, deleteLikes, deleteDislikes, deleteBookmarks]);
+    }
+
 
     // just for test, delete tuit by content
     deleteTuitByContent = (req: Request, res: Response) =>
