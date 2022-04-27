@@ -16,4 +16,5 @@ export default interface Tuit{
     stats: Stats;
     isLiked?: boolean; //mark as optional so this property can be added later
     isDisliked?: boolean;
+    isBookmarked?: boolean;
 }

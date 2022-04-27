@@ -7,6 +7,7 @@ import TuitControllerI from "../interfaces/tuits/TuitControllerI";
 import LikeDao from "../daos/LikeDao";
 import Tuit from "../models/tuits/Tuit";
 import DislikeDao from "../daos/DislikeDao";
+import BookmarkDao from "../daos/BookmarkDao";
 
 /**
  * @class TuitController Implements RESTful Web service API for tuits resource.
@@ -26,6 +27,7 @@ import DislikeDao from "../daos/DislikeDao";
 export default class TuitController implements TuitControllerI {
     private tuitDao: TuitDao = TuitDao.getInstance();
     private likeDao: LikeDao = LikeDao.getInstance();
+    private bookmarkDao: BookmarkDao = BookmarkDao.getInstance();
     private dislikeDao: DislikeDao = DislikeDao.getInstance();
     private static tuitController: TuitController | null = null;
 
@@ -66,7 +68,7 @@ export default class TuitController implements TuitControllerI {
         if (req.session['profile']) {
             // @ts-ignore
             let userId = req.session['profile']._id;
-            //update isLiked && isDisliked property
+            //update isLiked/isDisliked/isBookmarked property
             await this.addProperty(tuits, userId);
         }
         res.json(tuits);
@@ -90,7 +92,7 @@ export default class TuitController implements TuitControllerI {
             return;
         }
         let tuits: Tuit[] = await this.tuitDao.findTuitsByUser(userId)
-        //update isLiked && isDisliked property
+        //update isLiked/isDisliked/isBookmarked property
         await this.addProperty(tuits, userId);
         return res.json(tuits);
     }
@@ -170,9 +172,11 @@ export default class TuitController implements TuitControllerI {
         for (let i = 0; i < tuits.length; i++) {
             const userAlreadyLikedTuit = await this.likeDao.findUserLikesTuit(userId, tuits[i]._id);
             const userAlreadyDislikedTuit = await this.dislikeDao.findUserDislikesTuit(userId, tuits[i]._id)
-            //update isliked/isDisliked property
+            const userAlreadyBookmarkedTuit = await this.bookmarkDao.findUserBookmarksTuit(userId, tuits[i]._id)
+            //add isliked/isDisliked/isBookmarked property
             tuits[i].isLiked = Boolean(userAlreadyLikedTuit);
             tuits[i].isDisliked = Boolean(userAlreadyDislikedTuit)
+            tuits[i].isBookmarked = Boolean(userAlreadyBookmarkedTuit)
         }
     }
 }
