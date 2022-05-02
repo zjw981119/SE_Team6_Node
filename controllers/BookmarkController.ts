@@ -63,6 +63,11 @@ export default class BookmarkController implements BookmarkControllerI {
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ?
             profile._id : uid;
+        // avoid server crash
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
         BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId)
             .then(async bookmarks => {
                 // filter out null tuits
@@ -88,7 +93,11 @@ export default class BookmarkController implements BookmarkControllerI {
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ?
             profile._id : uid;
-
+        // avoid server crash
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
         const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId);
         // filter out null tuits && tag
         const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark =>
@@ -114,7 +123,11 @@ export default class BookmarkController implements BookmarkControllerI {
         const profile = req.session['profile'];
         const userId = uid === "me" && profile ?
             profile._id : uid;
-
+        // avoid server crash
+        if (userId === "me") {
+            res.sendStatus(503);
+            return;
+        }
         const bookmarkedTuits = await BookmarkController.bookmarkDao.findAllTuitsBookmarkedByUser(userId);
         // filter out null tuits && tag
         const bookmarkedNonNullTuits = bookmarkedTuits.filter(bookmark =>
